@@ -107,4 +107,7 @@ public class WebKeys implements com.liferay.portal.kernel.util.WebKeys {
 	
 	/** The default value of show article title in the header */
 	public static final String SHOW_ARTICLE_TITLE_DEFAULT = Boolean.FALSE.toString();
+	
+	/** The Constant SKIP_TIP	 */
+	public static final String SKIP_TIP="skipTip";
 }

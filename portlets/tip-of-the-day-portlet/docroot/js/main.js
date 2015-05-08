@@ -30,6 +30,8 @@ AUI.add('tip-of-the-day-dockbar', function (A, NAME) {
 		menuOptionsDisplay: null,
 		contentURL: null,
 		
+		skipCheckbox : null,
+		
 		initializer: function(){
 			var instance = this;
 			var box = this.get('container');
@@ -38,6 +40,9 @@ AUI.add('tip-of-the-day-dockbar', function (A, NAME) {
 			this.switchButtons = box.all(".switch-off-on");
 			this.closeButtons = box.all(".tofd-close-pop-up");
 			this.showCheckboxes = box.all(".ajax-checkbox-action");
+			
+			this.skipCheckbox=box.all(".skip-checkbox-action");
+			
 			this.dropdowns = box.all(".dropdown-toggle");
 			this.menuOptionsDisplay = box.all(".tip-of-the-day-menu .display-pop-up");
 			this.contentURL = this.get('contentURL');
@@ -111,6 +116,12 @@ AUI.add('tip-of-the-day-dockbar', function (A, NAME) {
 							return box.get('checked');
 						}
 				);	
+			});
+			
+			this.skipCheckbox.each(function(checkbox){
+				instance.skipThisArticle(checkbox,function(box){
+					return box.get('checked');
+				});
 			});
 			
 			this.dropdowns.each(function(dropdown){
@@ -198,7 +209,35 @@ AUI.add('tip-of-the-day-dockbar', function (A, NAME) {
 				});
 			}
 		},
-		
+		skipThisArticle: function(element,func){
+			var instance = this;
+			var box=this.get('container');
+			if (element) {
+				element.on('click', function(e){
+					var resourceURL= Liferay.PortletURL.createResourceURL();
+					resourceURL.setPortletId(instance.portletId);
+					resourceURL.setParameter('cmd','skipTip')
+					var check=func(element,e);
+					resourceURL.setParameter('articleId',instance.currentArticle);
+					resourceURL.setParameter('skipTip',box.one('.skip-checkbox-action').attr('checked'));
+					A.io(resourceURL.toString(), {
+						method: 'POST',
+						on: {
+							failure: function () {
+								if (console) { 
+									console.error('failure on ajax call');
+								}
+							},
+							success: function() {
+									
+								
+					
+							}
+						}
+					});
+				})
+			}
+		},
 		/*Resizes the pop up when the content changes*/
 		setInnerContent : function() {
 			var instance = this;
@@ -292,6 +331,9 @@ AUI.add('tip-of-the-day-dockbar', function (A, NAME) {
             },
             showPopUp: {
             	value: false
+            },
+            currentArticle: {
+            	value: null
             }
         }
     });

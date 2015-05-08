@@ -26,6 +26,10 @@ boolean disablePrev = GetterUtil.getBoolean(request.getAttribute("disablePrev"))
 boolean disableNext = GetterUtil.getBoolean(request.getAttribute("disableNext"));
 boolean stopShowing = GetterUtil.getBoolean(request.getAttribute(WebKeys.STOP_SHOWING));
 boolean showArticleTitle = GetterUtil.getBoolean(request.getAttribute(WebKeys.SHOW_ARTICLE_TITLE));
+
+
+boolean skip =GetterUtil.getBoolean(request.getAttribute(WebKeys.SKIP_TIP));
+
 %>
 
 <portlet:renderURL var="previousURL">
@@ -47,6 +51,7 @@ boolean showArticleTitle = GetterUtil.getBoolean(request.getAttribute(WebKeys.SH
         <c:choose>
             <c:when test="${not empty articleId}">
                 <liferay-ui:journal-article groupId="<%=themeDisplay.getScopeGroupId()%>" articleId="${articleId}" showTitle="${showArticleTitle}" />
+                <aui:input name="<%=WebKeys.SKIP_TIP%>" label="tof-skip-tip" type="checkbox" checked="<%=skip%>" cssClass="skip-checkbox-action" />
             </c:when>
             <c:otherwise>
                 <div class="portlet-msg-info">
@@ -71,6 +76,7 @@ boolean showArticleTitle = GetterUtil.getBoolean(request.getAttribute(WebKeys.SH
 	var tipOfTheDayContent = new A.TipOfTheDay({
 		container: A.one('#<portlet:namespace/>'),
 		portletId: '<%= portletId %>',
-		portletNamespace: '<portlet:namespace/>'
+		portletNamespace: '<portlet:namespace/>',
+		currentArticle: '${articleId}'
 	});
 </aui:script>
